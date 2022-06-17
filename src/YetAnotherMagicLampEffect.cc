@@ -135,13 +135,12 @@ void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, s
 
 void YetAnotherMagicLampEffect::postPaintScreen()
 {
-    auto modelIt = m_animationData.begin();
-    while (modelIt != m_animationData.end()) {
-        if ((*modelIt).model.done()) {
-            unredirect(modelIt.key());
-            modelIt = m_animationData.erase(modelIt);
+    for (auto it = m_animationData.begin(); it != m_animationData.end();) {
+        if (it->model.done()) {
+            unredirect(it.key());
+            it = m_animationData.erase(it);
         } else {
-            ++modelIt;
+            ++it;
         }
     }
 
@@ -155,8 +154,8 @@ void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRe
 
     auto modelIt = m_animationData.constFind(w);
     if (modelIt != m_animationData.constEnd()) {
-        if ((*modelIt).model.needsClip()) {
-            clip = (*modelIt).model.clipRegion();
+        if (modelIt->model.needsClip()) {
+            clip = modelIt->model.clipRegion();
         }
     }
 
