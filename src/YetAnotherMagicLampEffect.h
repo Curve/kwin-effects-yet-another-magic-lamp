@@ -24,6 +24,11 @@
 // kwineffects
 #include <kwindeformeffect.h>
 
+struct AnimationData {
+    Model model;
+    KWin::EffectWindowVisibleRef visibleRef;
+};
+
 class YetAnotherMagicLampEffect : public KWin::DeformEffect {
     Q_OBJECT
 
@@ -56,7 +61,7 @@ private:
     Model::Parameters m_modelParameters;
     int m_gridResolution;
 
-    QMap<KWin::EffectWindow*, Model> m_models;
+    QMap<KWin::EffectWindow*, AnimationData> m_animationData;
 };
 
 inline int YetAnotherMagicLampEffect::requestedEffectChainPosition() const

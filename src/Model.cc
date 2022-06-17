@@ -135,12 +135,6 @@ void Model::start(AnimationKind kind)
 {
     m_kind = kind;
 
-    if (m_window) {
-        m_visibleRef = KWin::EffectWindowVisibleRef(m_window, KWin::EffectWindow::PAINT_DISABLED_BY_MINIMIZE);
-    } else {
-        m_visibleRef = {};
-    }
-
     if (m_timeLine.running()) {
         m_timeLine.toggleDirection();
         return;

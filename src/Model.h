@@ -143,8 +143,6 @@ private:
     };
 
     KWin::EffectWindow* m_window;
-    KWin::EffectWindowVisibleRef m_visibleRef;
-
     AnimationKind m_kind;
     AnimationStage m_stage;
     KWin::TimeLine m_timeLine;
