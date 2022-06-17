@@ -152,10 +152,10 @@ void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRe
 {
     QRegion clip = region;
 
-    auto modelIt = m_animations.constFind(w);
-    if (modelIt != m_animations.constEnd()) {
-        if (modelIt->model.needsClip()) {
-            clip = modelIt->model.clipRegion();
+    auto it = m_animations.constFind(w);
+    if (it != m_animations.constEnd()) {
+        if (it->model.needsClip()) {
+            clip = it->model.clipRegion();
         }
     }
 
@@ -167,13 +167,13 @@ void YetAnotherMagicLampEffect::deform(KWin::EffectWindow* window, int mask, KWi
     Q_UNUSED(mask)
     Q_UNUSED(data)
 
-    auto modelIt = m_animations.constFind(window);
-    if (modelIt == m_animations.constEnd()) {
+    auto it = m_animations.constFind(window);
+    if (it == m_animations.constEnd()) {
         return;
     }
 
     quads = quads.makeGrid(m_gridResolution);
-    (*modelIt).model.apply(quads);
+    (*it).model.apply(quads);
 }
 
 bool YetAnotherMagicLampEffect::isActive() const
