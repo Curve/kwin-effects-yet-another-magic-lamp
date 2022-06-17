@@ -61,7 +61,7 @@ private:
     Model::Parameters m_modelParameters;
     int m_gridResolution;
 
-    QMap<KWin::EffectWindow*, AnimationData> m_animationData;
+    QMap<KWin::EffectWindow*, AnimationData> m_animations;
 };
 
 inline int YetAnotherMagicLampEffect::requestedEffectChainPosition() const

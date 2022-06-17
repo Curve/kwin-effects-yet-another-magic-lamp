@@ -124,7 +124,7 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
 
 void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, std::chrono::milliseconds presentTime)
 {
-    for (AnimationData& data : m_animationData) {
+    for (AnimationData& data : m_animations) {
         data.model.advance(presentTime);
     }
 
@@ -135,10 +135,10 @@ void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, s
 
 void YetAnotherMagicLampEffect::postPaintScreen()
 {
-    for (auto it = m_animationData.begin(); it != m_animationData.end();) {
+    for (auto it = m_animations.begin(); it != m_animations.end();) {
         if (it->model.done()) {
             unredirect(it.key());
-            it = m_animationData.erase(it);
+            it = m_animations.erase(it);
         } else {
             ++it;
         }
@@ -152,8 +152,8 @@ void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRe
 {
     QRegion clip = region;
 
-    auto modelIt = m_animationData.constFind(w);
-    if (modelIt != m_animationData.constEnd()) {
+    auto modelIt = m_animations.constFind(w);
+    if (modelIt != m_animations.constEnd()) {
         if (modelIt->model.needsClip()) {
             clip = modelIt->model.clipRegion();
         }
@@ -167,8 +167,8 @@ void YetAnotherMagicLampEffect::deform(KWin::EffectWindow* window, int mask, KWi
     Q_UNUSED(mask)
     Q_UNUSED(data)
 
-    auto modelIt = m_animationData.constFind(window);
-    if (modelIt == m_animationData.constEnd()) {
+    auto modelIt = m_animations.constFind(window);
+    if (modelIt == m_animations.constEnd()) {
         return;
     }
 
@@ -178,7 +178,7 @@ void YetAnotherMagicLampEffect::deform(KWin::EffectWindow* window, int mask, KWi
 
 bool YetAnotherMagicLampEffect::isActive() const
 {
-    return !m_animationData.isEmpty();
+    return !m_animations.isEmpty();
 }
 
 bool YetAnotherMagicLampEffect::supported()
@@ -203,7 +203,7 @@ void YetAnotherMagicLampEffect::slotWindowMinimized(KWin::EffectWindow* w)
         return;
     }
 
-    AnimationData& data = m_animationData[w];
+    AnimationData& data = m_animations[w];
     data.model.setWindow(w);
     data.model.setParameters(m_modelParameters);
     data.model.start(Model::AnimationKind::Minimize);
@@ -225,7 +225,7 @@ void YetAnotherMagicLampEffect::slotWindowUnminimized(KWin::EffectWindow* w)
         return;
     }
 
-    AnimationData& data = m_animationData[w];
+    AnimationData& data = m_animations[w];
     data.model.setWindow(w);
     data.model.setParameters(m_modelParameters);
     data.model.start(Model::AnimationKind::Unminimize);
@@ -237,15 +237,15 @@ void YetAnotherMagicLampEffect::slotWindowUnminimized(KWin::EffectWindow* w)
 
 void YetAnotherMagicLampEffect::slotWindowDeleted(KWin::EffectWindow* w)
 {
-    m_animationData.remove(w);
+    m_animations.remove(w);
 }
 
 void YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged()
 {
     if (KWin::effects->activeFullScreenEffect() != nullptr) {
-        for (auto it = m_animationData.constBegin(); it != m_animationData.constEnd(); ++it) {
+        for (auto it = m_animations.constBegin(); it != m_animations.constEnd(); ++it) {
             unredirect(it.key());
         }
-        m_animationData.clear();
+        m_animations.clear();
     }
 }
