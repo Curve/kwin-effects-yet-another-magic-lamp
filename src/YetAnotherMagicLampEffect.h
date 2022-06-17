@@ -36,9 +36,7 @@ public:
     void prePaintScreen(KWin::ScreenPrePaintData& data, std::chrono::milliseconds presentTime) override;
     void postPaintScreen() override;
 
-    void prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, std::chrono::milliseconds presentTime) override;
     void paintWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data) override;
-
 
     bool isActive() const override;
     int requestedEffectChainPosition() const override;
@@ -46,7 +44,7 @@ public:
     static bool supported();
 
 protected:
-    void deform(KWin::EffectWindow *window, int mask, KWin::WindowPaintData &data, KWin::WindowQuadList &quads) override;
+    void deform(KWin::EffectWindow* window, int mask, KWin::WindowPaintData& data, KWin::WindowQuadList& quads) override;
 
 private Q_SLOTS:
     void slotWindowMinimized(KWin::EffectWindow* w);
@@ -57,7 +55,6 @@ private Q_SLOTS:
 private:
     Model::Parameters m_modelParameters;
     int m_gridResolution;
-    std::chrono::milliseconds m_lastPresentTime;
 
     QMap<KWin::EffectWindow*, Model> m_models;
 };

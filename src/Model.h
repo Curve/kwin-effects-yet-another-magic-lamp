@@ -66,9 +66,9 @@ public:
     void start(AnimationKind kind);
 
     /**
-     * Updates the model by @p delta milliseconds.
+     * Updates the model to @p milliseconds.
      **/
-    void step(std::chrono::milliseconds delta);
+    void advance(std::chrono::milliseconds presentTime);
 
     /**
      * Returns whether the animation is complete.
@@ -143,6 +143,8 @@ private:
     };
 
     KWin::EffectWindow* m_window;
+    KWin::EffectWindowVisibleRef m_visibleRef;
+
     AnimationKind m_kind;
     AnimationStage m_stage;
     KWin::TimeLine m_timeLine;

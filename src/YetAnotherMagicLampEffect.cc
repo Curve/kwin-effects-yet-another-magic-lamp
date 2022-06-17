@@ -38,7 +38,6 @@ enum ShapeCurve {
 };
 
 YetAnotherMagicLampEffect::YetAnotherMagicLampEffect()
-    : m_lastPresentTime(std::chrono::milliseconds::zero())
 {
     reconfigure(ReconfigureAll);
 
@@ -125,13 +124,8 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
 
 void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, std::chrono::milliseconds presentTime)
 {
-    std::chrono::milliseconds delta = std::chrono::milliseconds::zero();
-    if (m_lastPresentTime.count())
-        delta = presentTime - m_lastPresentTime;
-    m_lastPresentTime = presentTime;
-
     for (Model& model : m_models) {
-        model.step(delta);
+        model.advance(presentTime);
     }
 
     data.mask |= PAINT_SCREEN_WITH_TRANSFORMED_WINDOWS;
@@ -151,21 +145,8 @@ void YetAnotherMagicLampEffect::postPaintScreen()
         }
     }
 
-    if (m_models.isEmpty())
-        m_lastPresentTime = std::chrono::milliseconds::zero();
-
     KWin::effects->addRepaintFull();
     KWin::effects->postPaintScreen();
-}
-
-void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, std::chrono::milliseconds presentTime)
-{
-    auto modelIt = m_models.constFind(w);
-    if (modelIt != m_models.constEnd()) {
-        w->enablePainting(KWin::EffectWindow::PAINT_DISABLED_BY_MINIMIZE);
-    }
-
-    KWin::effects->prePaintWindow(w, data, presentTime);
 }
 
 void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data)
@@ -182,7 +163,7 @@ void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRe
     KWin::effects->paintWindow(w, mask, clip, data);
 }
 
-void YetAnotherMagicLampEffect::deform(KWin::EffectWindow *window, int mask, KWin::WindowPaintData &data, KWin::WindowQuadList &quads)
+void YetAnotherMagicLampEffect::deform(KWin::EffectWindow* window, int mask, KWin::WindowPaintData& data, KWin::WindowQuadList& quads)
 {
     Q_UNUSED(mask)
     Q_UNUSED(data)
